@@ -7,6 +7,7 @@ const userURL = baseURL + '/user';
 const postsURL = baseURL + '/posts';
 const commentsURL = baseURL + '/comments';
 
+// --------- Errors ---------
 const serverError = 'Server error';
 const unauthorized = 'Unauthorized';
 const somethingWentWrong = 'something went wrong, try again!';

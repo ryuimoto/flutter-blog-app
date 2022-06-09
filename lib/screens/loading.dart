@@ -1,3 +1,5 @@
+import 'package:blog_app/constant.dart';
+import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_app/screens/login.dart';
@@ -13,6 +15,22 @@ class _LoadingState extends State<Loading>{
     String token = await getToken();
     if(token == ''){
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false);
+    }
+    else{
+      ApiResponse response = await getUserDetail();
+      if(response.error == null){
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (route) => false);
+
+      }
+      else if(response.error == unauthorized){
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false);
+
+      }
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: content
+        ))
+      }
     }
 
   }

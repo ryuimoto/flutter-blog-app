@@ -3,6 +3,7 @@ import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_app/screens/login.dart';
+import 'package:blog_app/screens/home.dart';
 
 class Loading extends StatefulWidget{
   @override
@@ -28,11 +29,16 @@ class _LoadingState extends State<Loading>{
       }
       else{
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: content
-        ))
+            content: Text('${response.error}'),
+        ));
       }
     }
+  }
 
+  @override
+  void initState(){
+    _loadUserInfo();
+    super.initState();
   }
 
   @override

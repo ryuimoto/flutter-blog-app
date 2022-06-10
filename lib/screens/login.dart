@@ -1,4 +1,5 @@
 import 'package:blog_app/constant.dart';
+import 'package:blog_app/screens/register.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget{
@@ -10,9 +11,6 @@ class _LoginState extends State<Login>{
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
-
-
-
 
   @override
   Widget build(BuildContext context){
@@ -47,7 +45,9 @@ class _LoginState extends State<Login>{
                 padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.symmetric(vertical: 10))
               ),
               onPressed: (){
-
+                if(formkey.currentState!.validate()){
+                  
+                }
               },
             ),
             SizedBox(height: 10,),

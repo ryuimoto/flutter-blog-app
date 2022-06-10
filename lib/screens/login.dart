@@ -1,3 +1,4 @@
+import 'package:blog_app/constant.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget{
@@ -28,12 +29,31 @@ class _LoginState extends State<Login>{
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               controller: txtEmail,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                contentPadding: EdgeInsets.all(10),
-                border: OutlineInputBorder(borderSide: BorderSide(width: 1,color: Colors.black)),
-              ),
+              validator: (val) => val!.isEmpty ? 'Invalid email address' : null,
+              decoration: kInputDecoration('Email'),
             ),
+            SizedBox(height: 10,),
+            TextFormField(
+              controller: txtPassword,
+              obscureText: true,
+              validator: (val) => val!.isEmpty ? 'Required at least 6 chars' : null,
+              decoration: kInputDecoration('Password'),
+            ),
+            SizedBox(height: 10,),
+            TextButton(
+              child: Text('Login',style: TextStyle(color: Colors.white)),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.blue),
+                padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.symmetric(vertical: 10))
+              ),
+              onPressed: (){
+
+              },
+            ),
+            SizedBox(height: 10,),
+            kLoginRegisterHint('Dont have an acount?', 'Register', (){
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Register()), (route) => false);
+            }),
           ],
         ),
       ),

@@ -1,19 +1,19 @@
 import 'dart:convert';
-
 import 'package:blog_app/constant.dart';
 import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 // login
-Future<ApiResponse> login(String email,String password) async {
+Future<ApiResponse> login (String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try{
     final response = await http.post(
         Uri.parse(loginURL),
         headers: {'Accept': 'application/json'},
-        body: {'email': email,'password' : password}
+        body: {'email': email, 'password': password}
     );
 
     switch(response.statusCode){
@@ -22,7 +22,7 @@ Future<ApiResponse> login(String email,String password) async {
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.body.elementAt(0)][0];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       case 403:
         apiResponse.error = jsonDecode(response.body)['message'];

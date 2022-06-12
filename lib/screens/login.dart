@@ -13,12 +13,14 @@ class Login extends StatefulWidget{
 }
 
 class _LoginState extends State<Login>{
+
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
 
   void _loginUser() async{
     ApiResponse response = await login(txtEmail.text,txtPassword.text);
+
     if(response.error == null){
       _saveAndRedirectToHome(response.data as User);
     }

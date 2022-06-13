@@ -1,5 +1,12 @@
+import 'dart:io';
+
 import 'package:blog_app/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:blog_app/models/api_response.dart';
+import 'package:blog_app/services/user_service.dart';
+import 'package:image_picker/image_picker.dart';
+
+
 
 class PostForm extends StatefulWidget{
   @override
@@ -10,7 +17,17 @@ class _PostFormState extends State<PostForm>{
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _txtControllerBody = TextEditingController();
   bool _loading = false;
+  File? _imageFile;
+  final _picker = ImagePicker();
 
+  Future getImage() async{
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    if(pickedFile != null){
+      setState(){
+        _imageFile = File(pickedFile.path);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context){
@@ -27,7 +44,7 @@ class _PostFormState extends State<PostForm>{
               child: IconButton(
                 icon: Icon(Icons.image,size: 50,color: Colors.black38),
                 onPressed: (){
-
+                  getImage();
                 },
               ),
             ),
@@ -64,3 +81,4 @@ class _PostFormState extends State<PostForm>{
     );
   }
 }
+

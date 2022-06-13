@@ -14,9 +14,10 @@ class Login extends StatefulWidget{
 
 class _LoginState extends State<Login>{
 
-  final GlobalKey<FormState> formkey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
+  bool loading = false;
 
   void _loginUser() async{
     ApiResponse response = await login(txtEmail.text,txtPassword.text);
@@ -25,6 +26,9 @@ class _LoginState extends State<Login>{
       _saveAndRedirectToHome(response.data as User);
     }
     else{
+      setState((){
+        loading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('${response.error}'),
       ));
@@ -47,7 +51,7 @@ class _LoginState extends State<Login>{
         centerTitle: true,
       ),
       body: Form(
-        key: formkey,
+        key: formKey,
         child: ListView(
           padding: EdgeInsets.all(32),
           children: [
@@ -61,22 +65,20 @@ class _LoginState extends State<Login>{
             TextFormField(
               controller: txtPassword,
               obscureText: true,
-              validator: (val) => val!.isEmpty ? 'Required at least 6 chars' : null,
+              validator: (val) => val!.length < 6 ? 'Required at least 6 chars' : null,
               decoration: kInputDecoration('Password'),
             ),
             SizedBox(height: 10,),
-            TextButton(
-              child: Text('Login',style: TextStyle(color: Colors.white)),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateColor.resolveWith((states) => Colors.blue),
-                padding: MaterialStateProperty.resolveWith((states) => EdgeInsets.symmetric(vertical: 10))
-              ),
-              onPressed: (){
-                if(formkey.currentState!.validate()){
+            loading? Center(child: CircularProgressIndicator(),)
+            :
+            kTextButton('login', (){
+              if(formKey.currentState!.validate()){
+                setState((){
+                  loading = true;
                   _loginUser();
-                }
-              },
-            ),
+                });
+              }
+            }),
             SizedBox(height: 10,),
             kLoginRegisterHint('Dont have an acount?', 'Register', (){
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Register()), (route) => false);

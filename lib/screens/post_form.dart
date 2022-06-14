@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:blog_app/constant.dart';
+import 'package:blog_app/screens/login.dart';
+import 'package:blog_app/services/post_service.dart';
 import 'package:flutter/material.dart';
 import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/services/user_service.dart';
@@ -29,8 +31,24 @@ class _PostFormState extends State<PostForm>{
 
   void _createPost() async {
     String? image = _imageFile == null ? null : getStringImage(_imageFile);
-    
+    ApiResponse response = await createPost(_txtControllerBody.text,image);
 
+    if(response.error == null){
+      Navigator.of(context).pop();
+    }
+    else if(response.error == unauthorized){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false)
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}')
+      ));
+      setState((){
+        _loading = !_loading;
+      });
+    }
   }
   
 
@@ -84,6 +102,7 @@ class _PostFormState extends State<PostForm>{
                 setState((){
                   _loading = !_loading;
                 });
+                _createPost();
               }
             }),
           ),

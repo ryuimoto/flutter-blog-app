@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:blog_app/constant.dart';
 import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/models/user.dart';
@@ -124,5 +125,9 @@ Future<int> getUserId() async{
 Future<bool> logout() async{
   SharedPreferences pref = await SharedPreferences.getInstance();
   return await pref.remove('token');
+}
 
+String? getStringImage(File? file){
+  if(file == null) return null;
+  return base64Encode(file.readAsBytesSync());
 }

@@ -27,6 +27,13 @@ class _PostFormState extends State<PostForm>{
     }
   }
 
+  void _createPost() async {
+    String? image = _imageFile == null ? null : getStringImage(_imageFile);
+    
+
+  }
+  
+
   @override
   Widget build(BuildContext context){
     return Scaffold(

@@ -6,8 +6,6 @@ import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/services/user_service.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-
 class PostForm extends StatefulWidget{
   @override
   _PostFormState createState() => _PostFormState();
@@ -20,12 +18,12 @@ class _PostFormState extends State<PostForm>{
   File? _imageFile;
   final _picker = ImagePicker();
 
-  Future getImage() async{
-    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
-    if(pickedFile != null){
-      setState(){
+  Future getImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null){
+      setState(() {
         _imageFile = File(pickedFile.path);
-      }
+      });
     }
   }
 
@@ -40,6 +38,12 @@ class _PostFormState extends State<PostForm>{
           Container(
             width: MediaQuery.of(context).size.width,
             height: 200,
+            decoration: BoxDecoration(
+                image: _imageFile == null ? null : DecorationImage(
+                    image: FileImage(_imageFile ?? File('')),
+                    fit: BoxFit.cover
+                )
+            ),
             child: Center(
               child: IconButton(
                 icon: Icon(Icons.image,size: 50,color: Colors.black38),

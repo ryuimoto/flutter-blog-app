@@ -77,7 +77,7 @@ Future<ApiResponse> createPost(String body,String? image) async{
 }
 
 // Edit post
-Future<ApiResponse> editPost(String postId,String body) async{
+Future<ApiResponse> editPost(int postId,String body) async{
   ApiResponse apiResponse = ApiResponse();
 
   try{

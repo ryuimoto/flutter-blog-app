@@ -8,7 +8,17 @@ import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/services/user_service.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../models/post.dart';
+
 class PostForm extends StatefulWidget{
+  final Post? post;
+  final String? title;
+
+  PostForm({
+    this.post,
+    this.title,
+  });
+
   @override
   _PostFormState createState() => _PostFormState();
 }
@@ -50,16 +60,45 @@ class _PostFormState extends State<PostForm>{
       });
     }
   }
-  
+
+  // edit post
+  void _editPost(int postId) async{
+    ApiResponse response = await editPost(postId, _txtControllerBody.text);
+    if(response.error == null){
+      Navigator.of(context).pop();
+    }
+    else if(response.error == unauthorized){
+      logout().then((value) => {
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false)
+      });
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}'),
+      ));
+      setState((){
+        _loading = !_loading;
+      });
+    }
+  }
+
+  @override
+  void initState(){
+    if(widget.post != null){
+      _txtControllerBody.text = widget.post!.body ?? '';
+
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add new post'),
+        title: Text('${widget.title}'),
       ),
       body: _loading ? Center(child: CircularProgressIndicator(),) : ListView(
         children: [
+          widget.post != null ? SizedBox() :
           Container(
             width: MediaQuery.of(context).size.width,
             height: 200,
@@ -102,7 +141,11 @@ class _PostFormState extends State<PostForm>{
                 setState((){
                   _loading = !_loading;
                 });
-                _createPost();
+                if(widget.post == null){
+                  _createPost();
+                }else{
+                  _editPost(widget.post!.id ?? 0);
+                }
               }
             }),
           ),

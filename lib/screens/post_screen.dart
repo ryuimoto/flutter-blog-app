@@ -1,6 +1,7 @@
 import 'package:blog_app/constant.dart';
 import 'package:blog_app/models/api_response.dart';
 import 'package:blog_app/screens/login.dart';
+import 'package:blog_app/screens/post_form.dart';
 import 'package:blog_app/services/post_service.dart';
 import 'package:blog_app/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -139,12 +140,14 @@ class _PostScreenState extends State<PostScreen>{
                               value: 'delete',
                             ),
                           ],
-                          onSelected: (val) =>{
+                          onSelected: (val) {
                             if(val == 'edit'){
-                              // edit
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostForm(
+                                title: 'Edit Post',
+                                post: post,
+                              )));
                             } else{
-                              // delete
-                              _handleDeletePost(post.id ?? 0),
+                              _handleDeletePost(post.id ?? 0);
                             }
                           },
                         ) : SizedBox(),

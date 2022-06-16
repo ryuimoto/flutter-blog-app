@@ -46,7 +46,11 @@ class _PostScreenState extends State<PostScreen>{
   @override
   Widget build(BuildContext context){
     return _loading ? Center(child: CircularProgressIndicator()) :
-        ListView.builder(
+        RefreshIndicator(
+          onRefresh: (){
+            return retrivePosts();
+          },
+          child:  ListView.builder(
             itemCount: _postList.length,
             itemBuilder: (BuildContext context,int index){
               Post post = _postList[index];
@@ -59,29 +63,29 @@ class _PostScreenState extends State<PostScreen>{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 6),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 38,
-                                  height: 38,
-                                  decoration: BoxDecoration(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(
                                     image: post.user!.image != null ?
-                                        DecorationImage(image: NetworkImage('${post.user!.image}')) : null,
+                                    DecorationImage(image: NetworkImage('${post.user!.image}')) : null,
                                     borderRadius: BorderRadius.circular(25),
                                     color: Colors.amber
-                                  ),
                                 ),
-                                SizedBox(width: 10,),
-                                Text(
-                                  '${post.user!.name}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 17,
-                                  ),
+                              ),
+                              SizedBox(width: 10,),
+                              Text(
+                                '${post.user!.name}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
+                          ),
                         ),
                         post.user!.id == userId ?
                         PopupMenuButton(
@@ -112,11 +116,53 @@ class _PostScreenState extends State<PostScreen>{
                     SizedBox(height: 12,),
                     Text('${post.body}'),
                     post.image != null ?
-                        
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 180,
+                      margin: EdgeInsets.only(top: 5),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: NetworkImage('${post.image}'),
+                            fit: BoxFit.cover
+                        ),
+                      ),
+                    ) : SizedBox(height: post.image != null ? 0 : 10,),
+                    Row(
+                      children: [
+                        kLikeAndComment(
+                          post.likesCount ?? 0,
+                          post.selfLiked == true ? Icons.favorite : Icons.favorite_outline,
+                          post.selfLiked == true ? Colors.red : Colors.black38,
+                          (){
+
+                          }
+                        ),
+                        Container(
+                          height: 25,
+                          width: 0.5,
+                          color: Colors.black38,
+                        ),
+                        kLikeAndComment(
+                            post.commentsCount ?? 0,
+                            Icons.sms_outlined,
+                            Colors.black54,
+                            (){
+
+                            }
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 0.5,
+                      color: Colors.black26,
+                    ),
                   ],
                 ),
               );
             },
+          ),
         );
+
   }
 }

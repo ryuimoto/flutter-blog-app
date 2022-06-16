@@ -37,6 +37,42 @@ class _PostScreenState extends State<PostScreen>{
     }
   }
 
+  void _handleDeletePost(int postId) async{
+    ApiResponse response = await deletePost(postId);
+    if(response.error == null){
+      retrivePosts();
+    }
+    else if(response.error == unauthorized){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false)
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}')
+      ));
+    }
+  }
+
+  // post like dislike
+  void _handlePostLikeDislike(int postId) async {
+    ApiResponse response = await likeUnlikePost(postId);
+
+    if(response.error == null){
+      retrivePosts();
+    }
+    else if(response.error == unauthorized){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false),
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}')
+          ));
+    }
+  }
+
   @override
   void initState(){
     retrivePosts();
@@ -108,6 +144,7 @@ class _PostScreenState extends State<PostScreen>{
                               // edit
                             } else{
                               // delete
+                              _handleDeletePost(post.id ?? 0),
                             }
                           },
                         ) : SizedBox(),
@@ -132,9 +169,9 @@ class _PostScreenState extends State<PostScreen>{
                         kLikeAndComment(
                           post.likesCount ?? 0,
                           post.selfLiked == true ? Icons.favorite : Icons.favorite_outline,
-                          post.selfLiked == true ? Colors.red : Colors.black38,
+                          post.selfLiked == true ? Colors.red : Colors.black54,
                           (){
-
+                            _handlePostLikeDislike(post.id ?? 0);
                           }
                         ),
                         Container(

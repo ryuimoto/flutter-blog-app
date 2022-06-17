@@ -1,5 +1,6 @@
 import 'package:blog_app/constant.dart';
 import 'package:blog_app/models/api_response.dart';
+import 'package:blog_app/screens/comment_screen.dart';
 import 'package:blog_app/screens/login.dart';
 import 'package:blog_app/screens/post_form.dart';
 import 'package:blog_app/services/post_service.dart';
@@ -187,7 +188,7 @@ class _PostScreenState extends State<PostScreen>{
                             Icons.sms_outlined,
                             Colors.black54,
                             (){
-
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CommentScreen()));
                             }
                         ),
                       ],

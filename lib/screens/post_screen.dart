@@ -188,7 +188,9 @@ class _PostScreenState extends State<PostScreen>{
                             Icons.sms_outlined,
                             Colors.black54,
                             (){
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CommentScreen()));
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CommentScreen(
+                                postId: post.id,
+                              )));
                             }
                         ),
                       ],

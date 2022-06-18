@@ -22,6 +22,7 @@ class _CommentScreenState extends State<CommentScreen>{
   List<dynamic> _commentsList = [];
   bool _loading = true;
   int userId = 0;
+  TextEditingController _txtCommentController = TextEditingController();
 
   // Get comments
   Future<void> _getComments() async{
@@ -42,6 +43,48 @@ class _CommentScreenState extends State<CommentScreen>{
     else{
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('${response.error}'),
+      ));
+    }
+  }
+
+  // create comment
+  void _createComment() async{
+    ApiResponse response = await createComments(widget.postId ?? 0,_txtCommentController.text);
+
+    if(response.error == null){
+      _txtCommentController.clear();
+      _getComments();
+    }
+    else if(response.error == unauthorized){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false)
+      });
+    }
+    else{
+      setState((){
+        _loading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}'),
+      ));
+    }
+  }
+
+  void _deleteComment(int commentId) async {
+    ApiResponse response = await deleteComments(commentId);
+
+    if(response.error == null){
+      _getComments();
+    }
+    else if(response.error == null){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false)
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}')
       ));
     }
   }
@@ -131,6 +174,7 @@ class _CommentScreenState extends State<CommentScreen>{
                                           });
 
                                         } else {
+                                          _deleteComment(comment.id ?? 0);
                                         }
                                       },
                                     ) : SizedBox()
@@ -155,7 +199,24 @@ class _CommentScreenState extends State<CommentScreen>{
               ),
               child: Row(
                 children: [
+                    Expanded(
+                        child: TextFormField(
+                          decoration: kInputDecoration('Comment'),
+                          controller: _txtCommentController,
+                        ),
 
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: (){
+                        if(_txtCommentController.text.isNotEmpty){
+                          setState((){
+                            _loading = true;
+                          });
+                          _createComment();
+                        }
+                      },
+                    )
 
                 ],
               ),

@@ -44,24 +44,21 @@ Future<ApiResponse> getComments(int postId) async{
 //Create comment
 Future<ApiResponse> createComments(int postId,String? comment) async{
   ApiResponse apiResponse = ApiResponse();
-
-  try{
+  try {
     String token = await getToken();
     final response = await http.post(Uri.parse('$postsURL/$postId/comments'),
         headers: {
-          'Accept' : 'application/json',
-          'Authorization' : 'Bearer $token',
-        },body: {
-          'comment' : comment,
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        }, body: {
+          'comment': comment
         });
 
     switch(response.statusCode){
       case 200:
-      // map each comemnts to comment model
-        apiResponse.data = jsonDecode(response.body)['comments'].map((p) => Comment.fromJson(p)).toList();
-        apiResponse.data as List<dynamic>;
+        apiResponse.data = jsonDecode(response.body);
         break;
-      case 402:
+      case 403:
         apiResponse.error = jsonDecode(response.body)['message'];
         break;
       case 401:

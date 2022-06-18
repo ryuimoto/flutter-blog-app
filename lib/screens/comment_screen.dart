@@ -22,6 +22,7 @@ class _CommentScreenState extends State<CommentScreen>{
   List<dynamic> _commentsList = [];
   bool _loading = true;
   int userId = 0;
+  int _editCommentId = 0;
   TextEditingController _txtCommentController = TextEditingController();
 
   // Get comments
@@ -71,6 +72,27 @@ class _CommentScreenState extends State<CommentScreen>{
     }
   }
 
+  // edit comment
+  void _editComment() async{
+    ApiResponse response = await editComments(_editCommentId, _txtCommentController.text);
+
+    if(response.error == null){
+      _editCommentId = 0;
+      _txtCommentController.clear();
+      _getComments();
+    }else if(response.error == unauthorized){
+      logout().then((value) => {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (route) => false),
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}'),
+      ));
+    }
+  }
+
+  // Delete comment
   void _deleteComment(int commentId) async {
     ApiResponse response = await deleteComments(commentId);
 
@@ -170,9 +192,9 @@ class _CommentScreenState extends State<CommentScreen>{
                                       onSelected: (val){
                                         if(val == 'edit'){
                                           setState(() {
-
+                                            _editCommentId = comment.id ?? 0;
+                                            _txtCommentController.text = comment.comment ?? '';
                                           });
-
                                         } else {
                                           _deleteComment(comment.id ?? 0);
                                         }
@@ -213,6 +235,11 @@ class _CommentScreenState extends State<CommentScreen>{
                           setState((){
                             _loading = true;
                           });
+                          _createComment();
+                        }
+                        if(_editCommentId > 0){
+                          _editComment();
+                        }else{
                           _createComment();
                         }
                       },

@@ -235,7 +235,6 @@ class _CommentScreenState extends State<CommentScreen>{
                           setState((){
                             _loading = true;
                           });
-                          _createComment();
                         }
                         if(_editCommentId > 0){
                           _editComment();
@@ -244,7 +243,6 @@ class _CommentScreenState extends State<CommentScreen>{
                         }
                       },
                     )
-
                 ],
               ),
             )
